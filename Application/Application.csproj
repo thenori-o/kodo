@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\DeleteWebhook\" />
+    <Folder Include="UseCases\GetWebhook\" />
+    <Folder Include="UseCases\UpdateWebhook\" />
+  </ItemGroup>
+
 </Project>
