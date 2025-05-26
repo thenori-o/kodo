@@ -1,19 +1,18 @@
-﻿using Application.Interfaces;
-using Infrastructure.ClickUp.DTOs;
-using Infrastructure.Config;
+﻿using ClickUpSdk.DTOs;
+using ClickUpSdk.DTOs.Webhook;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace Infrastructure.ClickUp.Services
+namespace ClickUpSdk.Client
 {
-    public class ClickUpWebhookService : IWebhookService
+    public class ClickUpClient
     {
-        private readonly Settings _settings;
+        private readonly ClickUpSettings _settings;
         private readonly HttpClient _httpClient;
 
-        public ClickUpWebhookService(HttpClient httpClient, IOptions<Settings> options)
+        public ClickUpClient(HttpClient httpClient, IOptions<ClickUpSettings> options)
         {
             _settings = options.Value;
             _httpClient = httpClient;
@@ -22,7 +21,7 @@ namespace Infrastructure.ClickUp.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<GetWebhookResponse> GetAsync(long teamId)
+        public async Task<GetWebhookResponse> GetWebhooksAsync(long teamId)
         {
             var url = $"{_settings.ApiAddress}/team/{teamId}/webhook";
 
@@ -57,7 +56,7 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task<CreateWebhookResponse> CreateAsync(CreateWebhookRequest request)
+        public async Task<CreateWebhookResponse> CreateWebhookAsync(CreateWebhookRequest request)
         {
             var url = $"{_settings.ApiAddress}/team/{request.TeamId}/webhook";
 
@@ -108,7 +107,7 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task<CreateWebhookResponse> UpdateAsync(Guid id, UpdateWebhookRequest request)
+        public async Task<CreateWebhookResponse> UpdateWebhookAsync(Guid id, UpdateWebhookRequest request)
         {
             var url = $"{_settings.ApiAddress}/webhook/{id}";
 
@@ -155,7 +154,7 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task DeleteAsync(Guid webhookId)
+        public async Task DeleteWebhookAsync(Guid webhookId)
         {
             var url = $"{_settings.ApiAddress}/webhook/{webhookId}";
 

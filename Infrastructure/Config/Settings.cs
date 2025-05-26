@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infrastructure.Config
+﻿namespace Infrastructure.Config
 {
-    internal class Settings
+    public class Settings
     {
+        public required string ApiAddress { get; set; }
+        public required string ClientId { get; set; }
+        public required string ClientSecret { get; set; }
+        public required string PersonalToken { get; set; }
     }
 }

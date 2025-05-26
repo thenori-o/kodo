@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Interfaces;
 
 namespace Application.UseCases.CreateWebhook
 {
-    internal class CreateWebhookUseCase
+    public class CreateWebhookUseCase
     {
+        private readonly IWebhookService _webhookService;
+
+        public CreateWebhookUseCase(IWebhookService webhookService)
+        {
+            _webhookService = webhookService;
+        }
+
+        public async Task<CreateWebhookOutput> ExecuteAsync(CreateWebhookInput input)
+        {
+            return await _webhookService.CreateAsync(input);
+        }
     }
 }

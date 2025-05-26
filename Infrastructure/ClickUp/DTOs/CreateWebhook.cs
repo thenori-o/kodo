@@ -1,12 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace Infrastructure.ClickUp.DTOs
 {
-    internal class CreateWebhook
+
+    public class CreateWebhookRequest
     {
+        [JsonPropertyName("endpoint")]
+        public string Endpoint { get; set; } = string.Empty;
+
+        [JsonPropertyName("team_id")]
+        public long? TeamId { get; set; }
+
+        [JsonPropertyName("events")]
+        public List<string> Events { get; set; } = new();
+
+        [JsonPropertyName("space_id")]
+        public long? SpaceId { get; set; }
+
+        [JsonPropertyName("folder_id")]
+        public long? FolderId { get; set; }
+
+        [JsonPropertyName("task_id")]
+        public long? TaskId { get; set; }
+
+        [JsonPropertyName("list_id")]
+        public long? ListId { get; set; }
     }
+
+    public class CreateWebhookResponse
+    {
+        public string Id { get; set; } = string.Empty;
+        public WebHookInfoWithViewId Webhook { get; set; } = new();
+    }
+
 }
