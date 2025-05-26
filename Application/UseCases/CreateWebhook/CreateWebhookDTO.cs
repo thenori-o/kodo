@@ -1,6 +1,7 @@
 ﻿namespace Application.UseCases.CreateWebhook
 {
     public record CreateWebhookInput(
+        long TeamId,
         string Endpoint,
         List<string> Events,
         long? SpaceId,
@@ -11,6 +12,6 @@
 
     public record CreateWebhookOutput(
         Guid Id,
-        WebHookInfo Webhook
+        WebHookInfoWithViewId Webhook
     );
 }

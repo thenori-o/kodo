@@ -21,7 +21,7 @@ namespace Infrastructure.ClickUp.DTOs
         public long? FolderId { get; set; }
 
         [JsonPropertyName("task_id")]
-        public long? TaskId { get; set; }
+        public string? TaskId { get; set; }
 
         [JsonPropertyName("list_id")]
         public long? ListId { get; set; }
@@ -29,7 +29,7 @@ namespace Infrastructure.ClickUp.DTOs
 
     public class CreateWebhookResponse
     {
-        public string Id { get; set; } = string.Empty;
+        public Guid Id { get; set; }
         public WebHookInfoWithViewId Webhook { get; set; } = new();
     }
 

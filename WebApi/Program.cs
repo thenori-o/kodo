@@ -1,13 +1,14 @@
-using ClickUpSdk;
-using ClickUpSdk.Client;
+using Application.Interfaces;
+using Infrastructure.ClickUp.Services;
+using Infrastructure.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.Configure<ClickUpSettings>(builder.Configuration.GetSection("ClickUp"));
-builder.Services.AddHttpClient<ClickUpClient>();
+builder.Services.Configure<Settings>(builder.Configuration.GetSection("ClickUp"));
+builder.Services.AddHttpClient<ClickUpWebhookService>();
 
-builder.Services.AddScoped<ClickUpClient>();
+builder.Services.AddScoped<IWebhookService, ClickUpWebhookService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

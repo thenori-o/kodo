@@ -1,6 +1,6 @@
 ﻿namespace Application.UseCases.UpdateWebhook
 {
-    public record UpdateWebhookInput(string Endpoint, List<string> Events, string status);
+    public record UpdateWebhookInput(Guid Id, string Endpoint, List<string> Events, string Status);
 
     public record UpdateWebhookOutput(
         Guid Id,

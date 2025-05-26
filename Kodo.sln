@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{DDF17816-80CD-44A2-8FA8-DEC4CF5A61B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickUpSDK", "ClickUpClient\ClickUpSDK.csproj", "{0B4944AB-C84A-4E8B-A750-EA48562D14B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kodo", "Kodo\Kodo.csproj", "{E5FF6B4A-D512-4667-866C-00F5AC5DBBB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kodo", "Kodo\Kodo.csproj", "{E5FF6B4A-D512-4667-866C-00F5AC5DBBB7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{341C5C17-5194-4CBB-9408-1F24B31EA62A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{341C5C17-5194-4CBB-9408-1F24B31EA62A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		{DDF17816-80CD-44A2-8FA8-DEC4CF5A61B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF17816-80CD-44A2-8FA8-DEC4CF5A61B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF17816-80CD-44A2-8FA8-DEC4CF5A61B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B4944AB-C84A-4E8B-A750-EA48562D14B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B4944AB-C84A-4E8B-A750-EA48562D14B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B4944AB-C84A-4E8B-A750-EA48562D14B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B4944AB-C84A-4E8B-A750-EA48562D14B6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E5FF6B4A-D512-4667-866C-00F5AC5DBBB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E5FF6B4A-D512-4667-866C-00F5AC5DBBB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5FF6B4A-D512-4667-866C-00F5AC5DBBB7}.Release|Any CPU.ActiveCfg = Release|Any CPU

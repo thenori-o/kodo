@@ -1,6 +1,9 @@
-﻿using ClickUpSdk;
-using ClickUpSdk.Client;
-using ClickUpSdk.DTOs.Webhook;
+﻿using Application.Interfaces;
+using Application.UseCases.CreateWebhook;
+using Application.UseCases.DeleteWebhook;
+using Application.UseCases.GetWebhooks;
+using Application.UseCases.UpdateWebhook;
+using Infrastructure.Config;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -10,12 +13,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class ClickUpController : ControllerBase
     {
-        private readonly ClickUpClient _clickUpClient;
-        private readonly ClickUpSettings _settings;
+        private readonly IWebhookService _webhookService;
+        private readonly Settings _settings;
 
-        public ClickUpController(ClickUpClient clickUpClient, IOptions<ClickUpSettings> settings)
+        public ClickUpController(IWebhookService webhookService, IOptions<Settings> settings)
         {
-            _clickUpClient = clickUpClient;
+            _webhookService = webhookService;
             _settings = settings.Value;
         }
 
@@ -24,7 +27,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var result = await _clickUpClient.GetWebhooksAsync(team_id);
+                var result = await _webhookService.GetAsync(new GetWebhooksInput(team_id));
                 return Ok(result);
             }
             catch (Exception ex)
@@ -34,11 +37,11 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("webhook")]
-        public async Task<IActionResult> Create(CreateWebhookRequest createReq)
+        public async Task<IActionResult> Create(CreateWebhookInput input)
         {
             try
             {
-                var result = await _clickUpClient.CreateWebhookAsync(createReq);
+                var result = await _webhookService.CreateAsync(input);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -47,12 +50,12 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPut("webhook/{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, UpdateWebhookRequest updateReq)
+        [HttpPut("webhook")]
+        public async Task<IActionResult> Update(UpdateWebhookInput input)
         {
             try
             {
-                var result = await _clickUpClient.UpdateWebhookAsync(id, updateReq);
+                var result = await _webhookService.UpdateAsync(input);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -66,7 +69,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _clickUpClient.DeleteWebhookAsync(id);
+                await _webhookService.DeleteAsync(new DeleteWebhookInput(id));
                 return NoContent();
             }
             catch (Exception ex)

@@ -1,4 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.UseCases.CreateWebhook;
+using Application.UseCases.DeleteWebhook;
+using Application.UseCases.GetWebhooks;
+using Application.UseCases.UpdateWebhook;
 using Infrastructure.ClickUp.DTOs;
 using Infrastructure.Config;
 using Microsoft.Extensions.Options;
@@ -22,9 +26,9 @@ namespace Infrastructure.ClickUp.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<GetWebhookResponse> GetAsync(long teamId)
+        public async Task<GetWebhooksOutput> GetAsync(GetWebhooksInput input)
         {
-            var url = $"{_settings.ApiAddress}/team/{teamId}/webhook";
+            var url = $"{_settings.ApiAddress}/team/{input.TeamId}/webhook";
 
             _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
@@ -32,13 +36,26 @@ namespace Infrastructure.ClickUp.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonSerializer.Deserialize<GetWebhookResponse>(responseJson, new JsonSerializerOptions
+                var deserializedJson = JsonSerializer.Deserialize<GetWebhookResponse>(responseJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-                if (result != null)
-                    return result;
+                if (deserializedJson != null)
+                    return new GetWebhooksOutput(deserializedJson.Webhooks.Select(w => new Application.UseCases.WebHookInfo(
+                        w.Id,
+                        w.UserId,
+                        w.TeamId,
+                        w.Endpoint,
+                        w.ClientId,
+                        new List<string>(w.Events),
+                        w.TaskId,
+                        w.ListId,
+                        w.FolderId,
+                        w.SpaceId,
+                        new Application.UseCases.WebhookHealth(w.Health.Status, w.Health.FailCount),
+                        w.Secret
+                    )));
 
                 throw new ApplicationException("A resposta da API foi bem-sucedida, mas não retornou dados esperados.");
             }
@@ -57,22 +74,20 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task<CreateWebhookResponse> CreateAsync(CreateWebhookRequest request)
+        public async Task<CreateWebhookOutput> CreateAsync(CreateWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/team/{request.TeamId}/webhook";
-
-            var requestBody = new CreateWebhookRequest
-            {
-                Endpoint = request.Endpoint,
-                Events = request.Events,
-                SpaceId = request.SpaceId,
-                FolderId = request.FolderId,
-                TaskId = request.TaskId,
-                ListId = request.ListId,
-            };
+            var url = $"{_settings.ApiAddress}/team/{input.TeamId}/webhook";
 
             var contentBody = new StringContent(
-                JsonSerializer.Serialize(requestBody),
+                JsonSerializer.Serialize(new CreateWebhookRequest
+                {
+                    Endpoint = input.Endpoint,
+                    Events = input.Events,
+                    SpaceId = input.SpaceId,
+                    FolderId = input.FolderId,
+                    TaskId = input.TaskId,
+                    ListId = input.ListId,
+                }),
                 Encoding.UTF8,
                 "application/json"
             );
@@ -83,13 +98,33 @@ namespace Infrastructure.ClickUp.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonSerializer.Deserialize<CreateWebhookResponse>(responseJson, new JsonSerializerOptions
+                var deserializedJson = JsonSerializer.Deserialize<CreateWebhookResponse>(responseJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-                if (result != null)
-                    return result;
+                if (deserializedJson != null)
+                    return new CreateWebhookOutput(
+                        deserializedJson.Id,
+                        new Application.UseCases.WebHookInfoWithViewId(
+                            deserializedJson.Webhook.Id,
+                            deserializedJson.Webhook.UserId,
+                            deserializedJson.Webhook.TeamId,
+                            deserializedJson.Webhook.Endpoint,
+                            deserializedJson.Webhook.ClientId,
+                            deserializedJson.Webhook.Events,
+                            deserializedJson.Webhook.TaskId,
+                            deserializedJson.Webhook.ListId,
+                            deserializedJson.Webhook.FolderId,
+                            deserializedJson.Webhook.SpaceId,
+                            deserializedJson.Webhook.ViewId,
+                            new Application.UseCases.WebhookHealth(
+                                deserializedJson.Webhook.Health.Status,
+                                deserializedJson.Webhook.Health.FailCount
+                            ),
+                            deserializedJson.Webhook.Secret
+                        )
+                    );
 
                 throw new ApplicationException("A resposta da API foi bem-sucedida, mas não retornou dados esperados.");
             }
@@ -108,17 +143,17 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task<CreateWebhookResponse> UpdateAsync(Guid id, UpdateWebhookRequest request)
+        public async Task<UpdateWebhookOutput> UpdateAsync(UpdateWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/webhook/{id}";
+            var url = $"{_settings.ApiAddress}/webhook/{input.Id}";
 
 
             var contentBody = new StringContent(
                 JsonSerializer.Serialize(new
                 {
-                    endpoint = request.Endpoint,
-                    events = request.Events,
-                    status = request.Status,
+                    endpoint = input.Endpoint,
+                    events = input.Events,
+                    status = input.Status,
                 }),
                 Encoding.UTF8,
                 "application/json"
@@ -130,13 +165,31 @@ namespace Infrastructure.ClickUp.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var result = JsonSerializer.Deserialize<CreateWebhookResponse>(responseJson, new JsonSerializerOptions
+                var deserializedJson = JsonSerializer.Deserialize<CreateWebhookResponse>(responseJson, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-                if (result != null)
-                    return result;
+                if (deserializedJson != null)
+                    return new UpdateWebhookOutput(deserializedJson.Id,
+                        new Application.UseCases.WebHookInfo(
+                            deserializedJson.Webhook.Id,
+                            deserializedJson.Webhook.UserId,
+                            deserializedJson.Webhook.TeamId,
+                            deserializedJson.Webhook.Endpoint,
+                            deserializedJson.Webhook.ClientId,
+                            deserializedJson.Webhook.Events,
+                            deserializedJson.Webhook.TaskId,
+                            deserializedJson.Webhook.ListId,
+                            deserializedJson.Webhook.FolderId,
+                            deserializedJson.Webhook.SpaceId,
+                            new Application.UseCases.WebhookHealth(
+                                deserializedJson.Webhook.Health.Status,
+                                deserializedJson.Webhook.Health.FailCount
+                            ),
+                            deserializedJson.Webhook.Secret
+                        )
+                    );
 
                 throw new ApplicationException("A resposta da API foi bem-sucedida, mas não retornou dados esperados.");
             }
@@ -155,9 +208,9 @@ namespace Infrastructure.ClickUp.Services
             }
         }
 
-        public async Task DeleteAsync(Guid webhookId)
+        public async Task DeleteAsync(DeleteWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/webhook/{webhookId}";
+            var url = $"{_settings.ApiAddress}/webhook/{input.WebhookId}";
 
             _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
@@ -180,25 +233,5 @@ namespace Infrastructure.ClickUp.Services
                 throw new ApplicationException(errorMessage);
             }
         }
-
-        //private async Task<string> GetClickUpAccessTokenAsync()
-        //{
-        //    var url = $"{_settings.ApiAddress}/oauth/token" +
-        //              $"?client_id={_settings.ClientId}" +
-        //              $"&client_secret={_settings.ClientSecret}" +
-        //              $"&code={_settings.Code}";
-
-        //    var response = await _httpClient.PostAsync(url, null);
-        //    var content = await response.Content.ReadAsStringAsync();
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var success = JsonSerializer.Deserialize<AccessTokenResponse>(content);
-        //        return success?.AccessToken ?? throw new ApplicationException("Token de acesso não encontrado na resposta.");
-        //    }
-
-        //    var error = JsonSerializer.Deserialize<ErrorResponse>(content);
-        //    throw new ApplicationException($"Erro ao obter token: {error?.Err} (Código: {error?.ECode})");
-        //}
     }
 }
