@@ -1,4 +1,8 @@
 using Application.Interfaces;
+using Application.UseCases.CreateWebhook;
+using Application.UseCases.DeleteWebhook;
+using Application.UseCases.GetWebhooks;
+using Application.UseCases.UpdateWebhook;
 using Infrastructure.ClickUp.Services;
 using Infrastructure.Config;
 
@@ -9,6 +13,11 @@ builder.Services.Configure<Settings>(builder.Configuration.GetSection("ClickUp")
 builder.Services.AddHttpClient<ClickUpWebhookService>();
 
 builder.Services.AddScoped<IWebhookService, ClickUpWebhookService>();
+
+builder.Services.AddScoped<GetWebhooksUseCase>();
+builder.Services.AddScoped<CreateWebhookUseCase>();
+builder.Services.AddScoped<UpdateWebhookUseCase>();
+builder.Services.AddScoped<DeleteWebhookUseCase>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

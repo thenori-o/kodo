@@ -1,11 +1,8 @@
-﻿using Application.Interfaces;
-using Application.UseCases.CreateWebhook;
+﻿using Application.UseCases.CreateWebhook;
 using Application.UseCases.DeleteWebhook;
 using Application.UseCases.GetWebhooks;
 using Application.UseCases.UpdateWebhook;
-using Infrastructure.Config;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace WebApi.Controllers
 {
@@ -13,13 +10,17 @@ namespace WebApi.Controllers
     [ApiController]
     public class ClickUpController : ControllerBase
     {
-        private readonly IWebhookService _webhookService;
-        private readonly Settings _settings;
+        private readonly GetWebhooksUseCase _getUseCase;
+        private readonly CreateWebhookUseCase _createUseCase;
+        private readonly UpdateWebhookUseCase _updateUseCase;
+        private readonly DeleteWebhookUseCase _deleteUseCase;
 
-        public ClickUpController(IWebhookService webhookService, IOptions<Settings> settings)
+        public ClickUpController(GetWebhooksUseCase getUseCase, CreateWebhookUseCase createUseCase, UpdateWebhookUseCase updateUseCase, DeleteWebhookUseCase deleteUseCase)
         {
-            _webhookService = webhookService;
-            _settings = settings.Value;
+            _getUseCase = getUseCase;
+            _createUseCase = createUseCase;
+            _updateUseCase = updateUseCase;
+            _deleteUseCase = deleteUseCase;
         }
 
         [HttpGet("webhook/{team_id:long}")]
@@ -27,7 +28,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var result = await _webhookService.GetAsync(new GetWebhooksInput(team_id));
+                var result = await _getUseCase.ExecuteAsync(new GetWebhooksInput(team_id));
                 return Ok(result);
             }
             catch (Exception ex)
@@ -41,7 +42,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var result = await _webhookService.CreateAsync(input);
+                var result = await _createUseCase.ExecuteAsync(input);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -55,7 +56,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var result = await _webhookService.UpdateAsync(input);
+                var result = await _updateUseCase.ExecuteAsync(input);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -69,7 +70,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                await _webhookService.DeleteAsync(new DeleteWebhookInput(id));
+                await _deleteUseCase.ExecuteAsync(new DeleteWebhookInput(id));
                 return NoContent();
             }
             catch (Exception ex)
