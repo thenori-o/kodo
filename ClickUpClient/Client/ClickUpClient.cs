@@ -1,18 +1,18 @@
-﻿using ClickUpClient.ClickUp.DTOs;
-using ClickUpClient.ClickUp.DTOs.Webhook;
+﻿using ClickUpSdk.DTOs;
+using ClickUpSdk.DTOs.Webhook;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
-namespace ClickUpClient.ClickUp.Services
+namespace ClickUpSdk.Client
 {
-    public class ClickUpWebhookService
+    public class ClickUpClient
     {
-        private readonly Settings _settings;
+        private readonly ClickUpSettings _settings;
         private readonly HttpClient _httpClient;
 
-        public ClickUpWebhookService(HttpClient httpClient, IOptions<Settings> options)
+        public ClickUpClient(HttpClient httpClient, IOptions<ClickUpSettings> options)
         {
             _settings = options.Value;
             _httpClient = httpClient;
@@ -21,12 +21,11 @@ namespace ClickUpClient.ClickUp.Services
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<GetWebhookResponse> GetWebhooksAsync(int teamId)
+        public async Task<GetWebhookResponse> GetWebhooksAsync(long teamId)
         {
-            var token = await GetClickUpAccessTokenAsync().ConfigureAwait(false);
             var url = $"{_settings.ApiAddress}/team/{teamId}/webhook";
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -59,13 +58,15 @@ namespace ClickUpClient.ClickUp.Services
 
         public async Task<CreateWebhookResponse> CreateWebhookAsync(CreateWebhookRequest request)
         {
-            var token = await GetClickUpAccessTokenAsync().ConfigureAwait(false);
             var url = $"{_settings.ApiAddress}/team/{request.TeamId}/webhook";
 
             var requestBody = new CreateWebhookRequest
             {
-                Endpoint = request.Endpoint, // https://mudfish-precious-totally.ngrok-free.app/api/clickup/webhook
+                Endpoint = request.Endpoint,
                 Events = request.Events,
+                SpaceId = request.SpaceId,
+                FolderId = request.FolderId,
+                TaskId = request.TaskId,
                 ListId = request.ListId,
             };
 
@@ -75,7 +76,7 @@ namespace ClickUpClient.ClickUp.Services
                 "application/json"
             );
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.PostAsync(url, contentBody).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -106,10 +107,9 @@ namespace ClickUpClient.ClickUp.Services
             }
         }
 
-        public async Task<CreateWebhookResponse> UpdateWebhookAsync(UpdateWebhookRequest request)
+        public async Task<CreateWebhookResponse> UpdateWebhookAsync(Guid id, UpdateWebhookRequest request)
         {
-            var token = await GetClickUpAccessTokenAsync().ConfigureAwait(false);
-            var url = $"{_settings.ApiAddress}/webhook/{request.WebhookId}";
+            var url = $"{_settings.ApiAddress}/webhook/{id}";
 
 
             var contentBody = new StringContent(
@@ -123,7 +123,7 @@ namespace ClickUpClient.ClickUp.Services
                 "application/json"
             );
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.PutAsync(url, contentBody).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -156,10 +156,9 @@ namespace ClickUpClient.ClickUp.Services
 
         public async Task DeleteWebhookAsync(Guid webhookId)
         {
-            var token = await GetClickUpAccessTokenAsync().ConfigureAwait(false);
             var url = $"{_settings.ApiAddress}/webhook/{webhookId}";
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
             using var response = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
@@ -181,24 +180,24 @@ namespace ClickUpClient.ClickUp.Services
             }
         }
 
-        private async Task<string> GetClickUpAccessTokenAsync()
-        {
-            var url = $"{_settings.ApiAddress}/oauth/token" +
-                      $"?client_id={_settings.ClientId}" +
-                      $"&client_secret={_settings.ClientSecret}" +
-                      $"&code={_settings.Code}";
+        //private async Task<string> GetClickUpAccessTokenAsync()
+        //{
+        //    var url = $"{_settings.ApiAddress}/oauth/token" +
+        //              $"?client_id={_settings.ClientId}" +
+        //              $"&client_secret={_settings.ClientSecret}" +
+        //              $"&code={_settings.Code}";
 
-            var response = await _httpClient.PostAsync(url, null);
-            var content = await response.Content.ReadAsStringAsync();
+        //    var response = await _httpClient.PostAsync(url, null);
+        //    var content = await response.Content.ReadAsStringAsync();
 
-            if (response.IsSuccessStatusCode)
-            {
-                var success = JsonSerializer.Deserialize<AccessTokenResponse>(content);
-                return success?.AccessToken ?? throw new ApplicationException("Token de acesso não encontrado na resposta.");
-            }
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var success = JsonSerializer.Deserialize<AccessTokenResponse>(content);
+        //        return success?.AccessToken ?? throw new ApplicationException("Token de acesso não encontrado na resposta.");
+        //    }
 
-            var error = JsonSerializer.Deserialize<ErrorResponse>(content);
-            throw new ApplicationException($"Erro ao obter token: {error?.Err} (Código: {error?.ECode})");
-        }
+        //    var error = JsonSerializer.Deserialize<ErrorResponse>(content);
+        //    throw new ApplicationException($"Erro ao obter token: {error?.Err} (Código: {error?.ECode})");
+        //}
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ClickUpClient.ClickUp.DTOs.Webhook
+﻿namespace ClickUpSdk.DTOs.Webhook
 {
     public class GetWebhookResponse
     {

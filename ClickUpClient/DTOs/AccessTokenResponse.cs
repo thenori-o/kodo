@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ClickUpClient.ClickUp.DTOs
+namespace ClickUpSdk.DTOs
 {
     public class AccessTokenResponse
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ClickUpClient.ClickUp.DTOs.Webhook
+namespace ClickUpSdk.DTOs.Webhook
 {
 
     public class CreateWebhookRequest
@@ -13,6 +13,15 @@ namespace ClickUpClient.ClickUp.DTOs.Webhook
 
         [JsonPropertyName("events")]
         public List<string> Events { get; set; } = new();
+
+        [JsonPropertyName("space_id")]
+        public long? SpaceId { get; set; }
+
+        [JsonPropertyName("folder_id")]
+        public long? FolderId { get; set; }
+
+        [JsonPropertyName("task_id")]
+        public long? TaskId { get; set; }
 
         [JsonPropertyName("list_id")]
         public long? ListId { get; set; }

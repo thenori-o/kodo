@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ClickUpClient.ClickUp.DTOs.Webhook
+namespace ClickUpSdk.DTOs.Webhook
 {
     public class WebHookInfo
     {

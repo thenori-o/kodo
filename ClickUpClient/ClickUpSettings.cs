@@ -1,10 +1,10 @@
-﻿namespace ClickUpClient.ClickUp
+﻿namespace ClickUpSdk
 {
-    public class Settings
+    public class ClickUpSettings
     {
         public required string ApiAddress { get; set; }
         public required string ClientId { get; set; }
         public required string ClientSecret { get; set; }
-        public required string Code { get; set; }
+        public required string PersonalToken { get; set; }
     }
 }
