@@ -9,7 +9,7 @@ using Infrastructure.Config;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.Configure<Settings>(builder.Configuration.GetSection("ClickUp"));
+builder.Services.Configure<KodoSettings>(builder.Configuration.GetSection("KodoSettings"));
 builder.Services.AddHttpClient<ClickUpWebhookService>();
 
 builder.Services.AddScoped<IWebhookService, ClickUpWebhookService>();

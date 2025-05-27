@@ -14,10 +14,10 @@ namespace Infrastructure.ClickUp.Services
 {
     public class ClickUpWebhookService : IWebhookService
     {
-        private readonly Settings _settings;
+        private readonly KodoSettings _settings;
         private readonly HttpClient _httpClient;
 
-        public ClickUpWebhookService(HttpClient httpClient, IOptions<Settings> options)
+        public ClickUpWebhookService(HttpClient httpClient, IOptions<KodoSettings> options)
         {
             _settings = options.Value;
             _httpClient = httpClient;
@@ -28,9 +28,9 @@ namespace Infrastructure.ClickUp.Services
 
         public async Task<GetWebhooksOutput> GetAsync(GetWebhooksInput input)
         {
-            var url = $"{_settings.ApiAddress}/team/{input.TeamId}/webhook";
+            var url = $"{_settings.ClickUp.ApiAddress}/team/{input.TeamId}/webhook";
 
-            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.ClickUp.PersonalToken);
             using var response = await _httpClient.GetAsync(url).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -76,7 +76,7 @@ namespace Infrastructure.ClickUp.Services
 
         public async Task<CreateWebhookOutput> CreateAsync(CreateWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/team/{input.TeamId}/webhook";
+            var url = $"{_settings.ClickUp.ApiAddress}/team/{input.TeamId}/webhook";
 
             var contentBody = new StringContent(
                 JsonSerializer.Serialize(new CreateWebhookRequest
@@ -92,7 +92,7 @@ namespace Infrastructure.ClickUp.Services
                 "application/json"
             );
 
-            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.ClickUp.PersonalToken);
             using var response = await _httpClient.PostAsync(url, contentBody).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -145,7 +145,7 @@ namespace Infrastructure.ClickUp.Services
 
         public async Task<UpdateWebhookOutput> UpdateAsync(UpdateWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/webhook/{input.Id}";
+            var url = $"{_settings.ClickUp.ApiAddress}/webhook/{input.Id}";
 
 
             var contentBody = new StringContent(
@@ -159,7 +159,7 @@ namespace Infrastructure.ClickUp.Services
                 "application/json"
             );
 
-            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.ClickUp.PersonalToken);
             using var response = await _httpClient.PutAsync(url, contentBody).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -210,9 +210,9 @@ namespace Infrastructure.ClickUp.Services
 
         public async Task DeleteAsync(DeleteWebhookInput input)
         {
-            var url = $"{_settings.ApiAddress}/webhook/{input.WebhookId}";
+            var url = $"{_settings.ClickUp.ApiAddress}/webhook/{input.WebhookId}";
 
-            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.PersonalToken);
+            _httpClient.DefaultRequestHeaders.Add("Authorization", _settings.ClickUp.PersonalToken);
             using var response = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
