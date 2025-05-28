@@ -27,9 +27,6 @@ namespace Kodo.Commands
 
         public Command GetCommand()
         {
-            Command.AddOption(new Option<string>("--teamId", "ID do time") { IsRequired = true });
-            Command.AddOption(new Option<string>("--endpoint", "URL do webhook") { IsRequired = true });
-
             Command.AddCommand(CreateCommand());
             Command.AddCommand(ListCommand());
             Command.AddCommand(UpdateCommand());
@@ -49,11 +46,16 @@ namespace Kodo.Commands
             var listIdOpt = new Option<long>("--list_id", "Id da sua lista") { IsRequired = true };
             var taskIdOpt = new Option<string>("--task_id", "Id da sua tarefa") { IsRequired = true };
 
+            cmd.AddOption(teamIdOpt);
             cmd.AddOption(endpointOpt);
             cmd.AddOption(eventsOpt);
+            cmd.AddOption(spaceIdOpt);
+            cmd.AddOption(folderIdOpt);
+            cmd.AddOption(listIdOpt);
+            cmd.AddOption(taskIdOpt);
 
             cmd.SetHandler(
-                async (teamId, endpoint, events, spaceId, folderId, listId, taskId) =>
+                async (teamId, endpoint, events, spaceId, folderId, taskId, listId) =>
                 {
                     CreateWebhookOutput? output = null;
                     try
@@ -100,7 +102,7 @@ namespace Kodo.Commands
                         Console.WriteLine($"⚠ Erro ao criar webhook: {ex.Message}");
                     }
                 },
-                teamIdOpt, endpointOpt, eventsOpt, spaceIdOpt, folderIdOpt, listIdOpt, taskIdOpt
+                teamIdOpt, endpointOpt, eventsOpt, spaceIdOpt, folderIdOpt, taskIdOpt, listIdOpt
             );
 
             return cmd;
@@ -110,6 +112,8 @@ namespace Kodo.Commands
         {
             var cmd = new Command("list", "Lista os webhooks existentes");
             var teamIdOpt = new Option<long>("--team_id", "Id do seu workspace") { IsRequired = true };
+
+            cmd.AddOption(teamIdOpt);
 
             cmd.SetHandler(
                 async (teamId) =>
@@ -190,7 +194,7 @@ namespace Kodo.Commands
             cmd.AddOption(endpointOpt);
             cmd.AddOption(eventsOpt);
 
-            cmd.SetHandler(async (string id, string? endpoint, string[]? events) =>
+            cmd.SetHandler(async (id, endpoint, events) =>
             {
                 var (token, teamId) = LoadConfig();
                 //var service = new ClickUpWebhookService(token, teamId);
@@ -208,7 +212,7 @@ namespace Kodo.Commands
             var idOpt = new Option<string>("--id", "ID do webhook") { IsRequired = true };
             cmd.AddOption(idOpt);
 
-            cmd.SetHandler(async (string id) =>
+            cmd.SetHandler(async (id) =>
             {
                 var (token, teamId) = LoadConfig();
                 //var service = new ClickUpWebhookService(token, teamId);
