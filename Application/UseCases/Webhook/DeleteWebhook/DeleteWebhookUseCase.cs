@@ -1,6 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Webhook;
 
-namespace Application.UseCases.DeleteWebhook
+namespace Application.UseCases.Webhook.DeleteWebhook
 {
     public class DeleteWebhookUseCase
     {

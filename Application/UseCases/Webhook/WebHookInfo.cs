@@ -1,4 +1,4 @@
-﻿namespace Application.UseCases
+﻿namespace Application.UseCases.Webhook
 {
     public record class WebHookInfo(
         Guid Id,

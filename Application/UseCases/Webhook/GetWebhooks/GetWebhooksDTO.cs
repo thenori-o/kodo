@@ -1,4 +1,4 @@
-﻿namespace Application.UseCases.GetWebhooks
+﻿namespace Application.UseCases.Webhook.GetWebhooks
 {
     public record GetWebhooksInput(long TeamId);
 

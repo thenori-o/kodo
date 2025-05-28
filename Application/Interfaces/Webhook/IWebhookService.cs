@@ -1,9 +1,9 @@
-﻿using Application.UseCases.CreateWebhook;
-using Application.UseCases.DeleteWebhook;
-using Application.UseCases.GetWebhooks;
-using Application.UseCases.UpdateWebhook;
+﻿using Application.UseCases.Webhook.CreateWebhook;
+using Application.UseCases.Webhook.DeleteWebhook;
+using Application.UseCases.Webhook.GetWebhooks;
+using Application.UseCases.Webhook.UpdateWebhook;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.Webhook
 {
     public interface IWebhookService
     {

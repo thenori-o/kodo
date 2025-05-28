@@ -1,4 +1,4 @@
-﻿namespace Application.UseCases.CreateWebhook
+﻿namespace Application.UseCases.Webhook.CreateWebhook
 {
     public record CreateWebhookInput(
         long TeamId,

@@ -6,4 +6,6 @@ namespace Kodo.Commands
     {
         Command GetCommand();
     }
+
+    public interface ISubCommandHandler : ICommandHandler { }
 }

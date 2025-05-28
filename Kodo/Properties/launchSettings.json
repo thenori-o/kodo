@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Kodo": {
+      "commandName": "Project",
+      "commandLineArgs": "config"
+    }
+  }
+}

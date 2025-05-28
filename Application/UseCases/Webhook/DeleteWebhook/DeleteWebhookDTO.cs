@@ -1,4 +1,4 @@
-﻿namespace Application.UseCases.DeleteWebhook
+﻿namespace Application.UseCases.Webhook.DeleteWebhook
 {
     public record DeleteWebhookInput(Guid WebhookId);
 }

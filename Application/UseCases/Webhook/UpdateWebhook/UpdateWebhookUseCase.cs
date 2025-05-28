@@ -1,6 +1,6 @@
-﻿using Application.Interfaces;
+﻿using Application.Interfaces.Webhook;
 
-namespace Application.UseCases.UpdateWebhook
+namespace Application.UseCases.Webhook.UpdateWebhook
 {
     public class UpdateWebhookUseCase
     {

@@ -1,8 +1,8 @@
-using Application.Interfaces;
-using Application.UseCases.CreateWebhook;
-using Application.UseCases.DeleteWebhook;
-using Application.UseCases.GetWebhooks;
-using Application.UseCases.UpdateWebhook;
+using Application.Interfaces.Webhook;
+using Application.UseCases.Webhook.CreateWebhook;
+using Application.UseCases.Webhook.DeleteWebhook;
+using Application.UseCases.Webhook.GetWebhooks;
+using Application.UseCases.Webhook.UpdateWebhook;
 using Infrastructure.ClickUp.Services;
 using Infrastructure.Config;
 

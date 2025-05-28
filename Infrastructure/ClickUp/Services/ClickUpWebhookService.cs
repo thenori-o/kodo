@@ -1,8 +1,8 @@
-﻿using Application.Interfaces;
-using Application.UseCases.CreateWebhook;
-using Application.UseCases.DeleteWebhook;
-using Application.UseCases.GetWebhooks;
-using Application.UseCases.UpdateWebhook;
+﻿using Application.Interfaces.Webhook;
+using Application.UseCases.Webhook.CreateWebhook;
+using Application.UseCases.Webhook.DeleteWebhook;
+using Application.UseCases.Webhook.GetWebhooks;
+using Application.UseCases.Webhook.UpdateWebhook;
 using Infrastructure.ClickUp.DTOs;
 using Infrastructure.Config;
 using Microsoft.Extensions.Options;
@@ -42,7 +42,7 @@ namespace Infrastructure.ClickUp.Services
                 });
 
                 if (deserializedJson != null)
-                    return new GetWebhooksOutput(deserializedJson.Webhooks.Select(w => new Application.UseCases.WebHookInfo(
+                    return new GetWebhooksOutput(deserializedJson.Webhooks.Select(w => new Application.UseCases.Webhook.WebHookInfo(
                         w.Id,
                         w.UserId,
                         w.TeamId,
@@ -53,7 +53,7 @@ namespace Infrastructure.ClickUp.Services
                         w.ListId,
                         w.FolderId,
                         w.SpaceId,
-                        new Application.UseCases.WebhookHealth(w.Health.Status, w.Health.FailCount),
+                        new Application.UseCases.Webhook.WebhookHealth(w.Health.Status, w.Health.FailCount),
                         w.Secret
                     )));
 
@@ -106,7 +106,7 @@ namespace Infrastructure.ClickUp.Services
                 if (deserializedJson != null)
                     return new CreateWebhookOutput(
                         deserializedJson.Id,
-                        new Application.UseCases.WebHookInfoWithViewId(
+                        new Application.UseCases.Webhook.WebHookInfoWithViewId(
                             deserializedJson.Webhook.Id,
                             deserializedJson.Webhook.UserId,
                             deserializedJson.Webhook.TeamId,
@@ -118,7 +118,7 @@ namespace Infrastructure.ClickUp.Services
                             deserializedJson.Webhook.FolderId,
                             deserializedJson.Webhook.SpaceId,
                             deserializedJson.Webhook.ViewId,
-                            new Application.UseCases.WebhookHealth(
+                            new Application.UseCases.Webhook.WebhookHealth(
                                 deserializedJson.Webhook.Health.Status,
                                 deserializedJson.Webhook.Health.FailCount
                             ),
@@ -172,7 +172,7 @@ namespace Infrastructure.ClickUp.Services
 
                 if (deserializedJson != null)
                     return new UpdateWebhookOutput(deserializedJson.Id,
-                        new Application.UseCases.WebHookInfo(
+                        new Application.UseCases.Webhook.WebHookInfo(
                             deserializedJson.Webhook.Id,
                             deserializedJson.Webhook.UserId,
                             deserializedJson.Webhook.TeamId,
@@ -183,7 +183,7 @@ namespace Infrastructure.ClickUp.Services
                             deserializedJson.Webhook.ListId,
                             deserializedJson.Webhook.FolderId,
                             deserializedJson.Webhook.SpaceId,
-                            new Application.UseCases.WebhookHealth(
+                            new Application.UseCases.Webhook.WebhookHealth(
                                 deserializedJson.Webhook.Health.Status,
                                 deserializedJson.Webhook.Health.FailCount
                             ),
